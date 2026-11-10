@@ -1070,7 +1070,8 @@ static void wpa_supplicant_process_1_of_4(struct wpa_sm *sm,
 	kde_len = sm->assoc_wpa_ie_len;
 	kde_buf = os_malloc(kde_len +
 			    2 + RSN_SELECTOR_LEN + 3 +
-			    sm->assoc_rsnxe_len +
+			    (sm->ap_rsnxe && wpa_key_mgmt_sae(sm->key_mgmt) ?
+			     sm->assoc_rsnxe_len : 0) +
 			    2 + RSN_SELECTOR_LEN + 1 +
 			    2 + RSN_SELECTOR_LEN + 2 + mlo_kde_len);
 
@@ -1105,7 +1106,8 @@ static void wpa_supplicant_process_1_of_4(struct wpa_sm *sm,
 	}
 #endif /* CONFIG_OCV */
 
-	if (sm->assoc_rsnxe && sm->assoc_rsnxe_len) {
+	if (sm->ap_rsnxe && sm->assoc_rsnxe && sm->assoc_rsnxe_len &&
+	    wpa_key_mgmt_sae(sm->key_mgmt)) {
 		os_memcpy(kde + kde_len, sm->assoc_rsnxe, sm->assoc_rsnxe_len);
 		kde_len += sm->assoc_rsnxe_len;
 	}

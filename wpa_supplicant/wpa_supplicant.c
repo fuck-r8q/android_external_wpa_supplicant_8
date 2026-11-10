@@ -1721,6 +1721,10 @@ static void wpas_update_allowed_key_mgmt(struct wpa_supplicant *wpa_s,
 	if (akm_count < 2)
 		return;
 
+	if (wpa_s->wpa_proto == WPA_PROTO_RSN &&
+	    wpa_key_mgmt_wpa_psk_no_sae(wpa_s->key_mgmt))
+		return;
+
 	akm_count--;
 	wpa_s->allowed_key_mgmts = 0;
 	switch (wpa_s->key_mgmt) {
